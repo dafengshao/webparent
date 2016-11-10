@@ -46,8 +46,8 @@ public class HessianServiceHandler extends SimpleChannelInboundHandler<FullHttpR
 					HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
 			if (!"x-application/hessian".equals(charSequence)) {
 				logger.info("web request");
-				ByteBuf bb = Unpooled.copiedBuffer(new StringBuffer("hessain server "),CharsetUtil.UTF_8);
-				response.content().writeBytes(bb);
+				//ByteBuf bb = Unpooled.copiedBuffer(new StringBuffer("hessain server "),CharsetUtil.UTF_8);
+				response.content().writeBytes("hessain server ".getBytes());
 			} else {
 				HttpMethod method = request.method();
 				if (!method.equals(HttpMethod.POST)) {
