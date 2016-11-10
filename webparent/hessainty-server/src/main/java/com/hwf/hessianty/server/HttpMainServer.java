@@ -3,6 +3,8 @@ package com.hwf.hessianty.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hwf.hessianty.spring.SpringBootstrap;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -13,6 +15,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseDecoder;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
 public class HttpMainServer {
@@ -30,7 +33,10 @@ public class HttpMainServer {
 					.addLast("http-aggregator",new HttpObjectAggregator(1024*512))//512KB
 					.addLast("http-encoder",new HttpResponseDecoder())
 					.addLast("http-chunked", new ChunkedWriteHandler())
-					.addLast("http-servlet",new HessianServiceHandler());
+					.addLast("http-logger", new LoggingHandler())
+					.addLast("http-servlet",new HessianServiceHandler())
+					//.addLast("http-servlet2",new HessianServiceHandler2())
+					;
 				}
 			});
 					
@@ -48,6 +54,7 @@ public class HttpMainServer {
 		int port=9527;
 		String ip = "192.168.0.126";
 		try {
+			SpringBootstrap.init();
 			mainserver.run(port, ip);
 		} catch (Exception e) {
 			logger.info("http服务器启动异常,ip={},port={}",ip,port,e);

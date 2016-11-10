@@ -4,9 +4,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public final class SpringBootstrap {
-	static ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring/applicationContext.xml");
-	
-	
+	static ApplicationContext applicationContext = null;
 	
 	public static ApplicationContext getApplicationContext() {
 		return applicationContext;
@@ -22,4 +20,7 @@ public final class SpringBootstrap {
 		return t;
 	}
 	
+	public static void init(){
+		applicationContext = new ClassPathXmlApplicationContext("classpath:spring/applicationContext.xml");
+	}
 }

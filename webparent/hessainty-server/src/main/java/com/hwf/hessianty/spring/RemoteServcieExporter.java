@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.hwf.hessianty.annotation.RemoteService;
-@Component
+
 public class RemoteServcieExporter implements BeanDefinitionRegistryPostProcessor  {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	

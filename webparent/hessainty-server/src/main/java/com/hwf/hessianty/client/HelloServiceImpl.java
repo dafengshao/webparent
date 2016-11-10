@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.hwf.hessianty.annotation.RemoteService;
-@RemoteService(name="/helloService")
 @Service("helloService")
 public class HelloServiceImpl implements HelloService{
 	private static final Logger logger = LoggerFactory.getLogger(HelloServiceImpl.class);
