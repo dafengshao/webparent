@@ -604,5 +604,7 @@
 	<modules>
 		<module>commonweb-server</module>
 		<module>hessianty-server</module>
+		<module>hunter</module>
+		<module>common</module>
 	</modules>
 </project>

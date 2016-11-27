@@ -1,4 +1,4 @@
-package org.feng.mycache.util;
+package com.hwf.common.algorithm;
 
 /** Snowflake 分布式自增id生成器
  * 
