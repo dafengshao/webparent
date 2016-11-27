@@ -22,6 +22,40 @@ public final class FileUtil {
 		return copy(inFile,outFile);
 	}
 	
+	public static boolean copyDir(File inDirFile,String outDir,boolean delete){
+		if(!inDirFile.exists()){
+			return false;
+		}
+		if(!inDirFile.isDirectory()){
+			return false;
+		}
+		String outFileDir = "";
+		if(outDir.endsWith("/")){
+			outFileDir = outDir+inDirFile.getName()+"/";
+		}else{
+			outFileDir = outDir+"/"+inDirFile.getName()+"/";
+		}
+		File[] listFiles = inDirFile.listFiles();
+		if(listFiles!=null){
+			for (int i = 0; i < listFiles.length; i++) {
+				File inFile = listFiles[i];
+				if(inFile.isFile()){
+					File outFile = new File(outFileDir+inFile.getName());
+					if(copy(inFile, outFile)&&delete){
+						inFile.delete();
+					}
+				}else{
+					copyDir(inFile,outFileDir,delete);
+				}
+			}
+			if(delete)inDirFile.delete();
+		}else if(delete){
+			inDirFile.delete();
+		}
+		return true;
+	}
+	
+	
 	public static boolean copy(File inFile,File outFile){
 		
 		FileInputStream fis = null;
@@ -86,7 +120,8 @@ public final class FileUtil {
 	}
 	
 	public static void main(String[] args) {
-		//copy("F:/avxt/1/大場ゆい ooba_yui.jpg", "F:/avxt/1-copy/大場ゆい ooba_yui.jpg");
-		//delete("F:/avxt/1-copy/大場ゆい ooba_yui.jpg");
+		File file = new File("F:/hunter/avmo.pw/movie/2016/01-01/EKDV-436/ok");
+		File file1 = new File("F:/hunter/avmo.pw/movie/2016/01-01/EKDV-436/voer.ok");
+		file.renameTo(file1);
 	}
 }
