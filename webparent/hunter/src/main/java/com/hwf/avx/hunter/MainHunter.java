@@ -1,7 +1,9 @@
 package com.hwf.avx.hunter;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.elasticsearch.action.search.SearchResponse;
@@ -21,8 +23,9 @@ import com.hwf.common.pool.SafeStack;
 
 public class MainHunter {
 	private static Logger logger = LoggerFactory.getLogger(MainHunter.class);
-	private static final String queryJSON = "{\"query\":{\"bool\":{\"must\":[{\"term\":{\"leibie\":\"肛交\"}},{\"term\":{\"actorList.name\":\"水原さな\"}}]}}}";
-	private SafeStack<JSONObject>  safeStack = new SafeStack<>();
+	//private static final String queryJSON = "{\"query\":{\"bool\":{\"must\":[{\"term\":{\"leibie\":\"肛交\"}}]}}}";
+	private static final String queryJSON = "{\"query\":{\"bool\":{\"must\":[{\"term\":{\"actorList.name\":\"水原さな\"}}]}}}";
+	private SafeStack<JSONObject> safeStack = new SafeStack<>();
 	
 	public void produce() throws Exception {
 		ScrollSearch scrollSearch = new ScrollSearch();
@@ -58,43 +61,37 @@ public class MainHunter {
 		JSONObject json = new JSONObject();
 		json.put("code", source.get("code"));
 		json.put("faxingshijian", source.get("faxingshijian")==null?"0000-00-00":source.get("faxingshijian"));
-		//json.put("imgURLList", source.get("imgURLList"));
+		json.put("imgURLList", source.get("imgURLList"));
 		return json;
 	}
 	public SafeStack<JSONObject> getSafeStack() {
 		return safeStack;
 	}
 	
-	static String oldPath = "F:/hunter/avmo.pw/movie/";
-	static String newPath = "savmo.pw.movie/";
+	
 	
 	
 	
 	public void consume(){
 		JSONObject json = null;
 		while((json=safeStack.pop(10000))!=null){
-			//JSONArray imgURLList = (JSONArray) json.get("imgURLList");
 			String code = json.getString("code");
+			//String newCodeDir = code.substring(0,code.indexOf("-"))+code.substring(code.indexOf("-"),code.indexOf("-")+2);
 			String faxingshijian = json.getString("faxingshijian");
-			if(faxingshijian==null){
-				faxingshijian = "0000-00-00";
-			}
-			String replaceFirst = faxingshijian.replaceFirst("-", "/");
-			StringBuilder sb = new StringBuilder(oldPath)
-				.append(replaceFirst)
-				.append("/").append(code).append("/ok");
+			StringBuilder sb = FileNameUtil.getOldDirPath(faxingshijian,code).append("ok");
+			StringBuilder newsb = FileNameUtil.getDirPath(faxingshijian);
 			File file = new File(sb.toString());
-			StringBuilder newsb = new StringBuilder(newPath)
-				.append(replaceFirst)
-				.append("/");
 			if(file.exists()){
-				FileUtil.copyDir(file.getParentFile(), newsb.toString(), true);
+				FileUtil.copyDir(file.getParentFile(), newsb.toString(), false);
 				File oldOKfile = new File(newsb.append(code).append("/").append("ok").toString());
 				File newOKfile = new File(newsb.toString().replace("ok", code+".over"));
 				oldOKfile.renameTo(newOKfile);
 				logger.info("{},处理OK",newsb);
 			}else{
-				
+				List<?> imgURLList = (ArrayList<?>) json.get("imgURLList");
+				if(imgURLList==null){
+					return ;
+				}
 			}
 			/*for (int j = 0; j < imgURLList.size(); j++) {
 				String imgUrl = (String) imgURLList.get(j);
