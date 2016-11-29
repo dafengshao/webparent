@@ -1,4 +1,4 @@
-package com.hwf.test.http;
+package com.hwf.common.pool;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,6 +12,10 @@ public class  PoolStack<T> {
     private AtomicInteger size = new AtomicInteger(0);
     
     private int max = 10;
+    
+    public PoolStack(){
+    	
+    }
     
     public PoolStack(InstanceFactory<T> instanceFactory){
     	this(10,instanceFactory);
