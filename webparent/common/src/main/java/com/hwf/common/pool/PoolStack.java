@@ -49,7 +49,7 @@ public class  PoolStack<T> {
         	}
         }
     }
-    /**出栈*/
+    /**出栈 阻塞式*/
     public T pop(){
         while(true){
             Element<T> oldHead = head.get();
