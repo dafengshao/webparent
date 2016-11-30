@@ -120,8 +120,6 @@ public final class FileUtil {
 	}
 	
 	public static void main(String[] args) {
-		File file = new File("F:/hunter/avmo.pw/movie/2016/01-01/EKDV-436/ok");
-		File file1 = new File("F:/hunter/avmo.pw/movie/2016/01-01/EKDV-436/voer.ok");
-		file.renameTo(file1);
+		
 	}
 }
