@@ -3,7 +3,8 @@ package com.hwf.avx.hunter;
 public final class FileNameUtil {
 	
 	private static String oldPath = "F:/hunter/avmo.pw/movie/";
-	private static String newPath = "F:/hunter/new.avmo.pw.movie/";
+	private static String newPath = "F:/hunter/avmo-pw/movie/";
+	private static int savePathType = 0;
 	
 	private static String defaultFaxingshijian = "0000-00-00";
 	
@@ -21,10 +22,13 @@ public final class FileNameUtil {
 	
 	/**yyyy-MM-dd*/
 	public static StringBuilder getDirPath(String faxingshijian){
+		StringBuilder sb = new StringBuilder(newPath);
+		if(savePathType!=0){
+			return sb;
+		}
 		if(faxingshijian==null){
 			faxingshijian = defaultFaxingshijian;
 		}
-		StringBuilder sb = new StringBuilder(newPath);
 		sb.append(faxingshijian.replaceAll("-", "/")).append("/");
 		return sb;
 	}
@@ -33,4 +37,16 @@ public final class FileNameUtil {
 		System.out.println(getOldDirPath("0000-00-00","11"));
 		System.out.println(getDirPath("0000-00-00"));
 	}
+
+
+	public static void setNewPath(String newPath) {
+		FileNameUtil.newPath = newPath;
+	}
+
+
+	public static void setSavePathType(int savePathType) {
+		FileNameUtil.savePathType = savePathType;
+	}
+	
+	
 }
