@@ -17,6 +17,8 @@ import org.jsoup.helper.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import redis.clients.jedis.JedisCommands;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hwf.avx.config.PrefixConfig;
@@ -28,18 +30,22 @@ import com.hwf.avx.http.HttpImageUtil;
 import com.hwf.common.io.FileUtil;
 import com.hwf.common.pool.SafeStack;
 
-public class MainHunter {
-	private static Logger logger = LoggerFactory.getLogger(MainHunter.class);
+public class UnofficialMainHunter {
+	private static Logger logger = LoggerFactory.getLogger(UnofficialMainHunter.class);
+	private static JedisCommands jedis = (JedisCommands) new RedisWriter().getProxy();
 	// private static final String queryJSON =
 	// "{\"query\":{\"bool\":{\"must\":[{\"term\":{\"leibie\":\"肛交\"}}]}}}";
 	// private static final String queryJSON =
 	// "{\"query\":{\"bool\":{\"must\":[{\"term\":{\"actorList.name\":\"佐々木あき\"}}]}}}";
-	
-	public static void main(String[] args) throws Exception {
-		final MainHunter hunter = new MainHunter();
+	//"{\"query\":{\"bool\":{\"must\":[{\"term\":{\"leibie\":\"单体作品\"}},{\"term\":{\"actorList.name\":\"佐々木あき\"}}]}}}";
+	private static final String queryJSON = 
+			"{\"query\":{\"bool\":{\"must\":[{\"range\":{\"faxingshijian\":{\"gt\":\"2015-12-31\"}}},{\"term\":{\"leibie\":\"肛交\"}}]}}}";
+			//"{\"query\":{\"bool\":{\"must\":[{\"term\":{\"actorList.name\":\"今永さな\"}}]}}}";
+			public static void main(String[] args) throws Exception {
+		final UnofficialMainHunter hunter = new UnofficialMainHunter();
 		int poolThead = 10;
 		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(poolThead);
-		FileNameUtil.setNewPath("F:/hunter/佐々木あき/");
+		FileNameUtil.setNewPath("F:/hunter/2016-gj/");
 		FileNameUtil.setSavePathType(1);
 		hunter.produce();
 		for(int i=0;i<poolThead;i++){
@@ -50,14 +56,11 @@ public class MainHunter {
 				}
 			});
 		}
-		
+		newFixedThreadPool.shutdown();
 		
 	}
 	
-	private static final String queryJSON = 
-			"{\"query\":{\"bool\":"
-			+ "{\"must\":[{\"term\":{\"leibie\":\"单体作品\"}},"
-			+ "{\"term\":{\"actorList.name\":\"佐々木あき\"}}]}}}";
+	
 	
 	private static final PrefixConfig config = new PrefixConfig(AvType.mo);
 	
@@ -120,48 +123,61 @@ public class MainHunter {
 	public void consume() {
 		JSONObject json = null;
 		while ((json = safeStack.pop(10000)) != null) {
-			String code = json.getString("code");
-			String faxingshijian = json.getString("faxingshijian");
-			StringBuilder newsb = FileNameUtil.getDirPath(faxingshijian);
-			if(new File(newsb.toString()+code+"/"+code+".over").exists()){
-				//已经存在
+			/*String code = json.getString("code");
+			String key = "mo_ok";
+			if(jedis.sismember(key, code)){
 				continue;
+			}*/
+			if(excute(json)){
+				//jedis.sadd(key, code);
 			}
-			StringBuilder sb = FileNameUtil.getOldDirPath(faxingshijian, code)
-					.append("ok");
-			File oldFile = new File(sb.toString());
-			if (oldFile.exists()) {
-				FileUtil.copyDir(oldFile.getParentFile(), newsb.toString(), false);
-				File oldOKfile = new File(newsb.append(code).append("/")
-						.append("ok").toString());
-				File newOKfile = new File(newsb.toString().replace("ok",
-						code + ".over"));
-				if(oldOKfile.renameTo(newOKfile)){
-					logger.info("{},local copy OK", newsb);
-				}
-			} else {
-				newsb.append(code).append("/");
-				String coverURL = (String) json.get("coverURL");
-				if (!StringUtil.isBlank(coverURL)) {
-					HttpImageUtil.downImage(coverURL, newsb.toString(), 3);
-				}
-				List<?> imgURLList = (ArrayList<?>) json.get("imgURLList");
-				List<?> bigImgURLList = (ArrayList<?>) json
-						.get("bigImgURLList");
-				downList(bigImgURLList, newsb, 1);
-				downList(imgURLList, newsb, bigImgURLList == null ? 2 : 3);
-				File newOKfile = new File(newsb.toString()+("/"+
-						code + ".over"));
-				try {
-					if(newOKfile.createNewFile()){
-						logger.info("{},处理OK", newsb);
-					}
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-			
 		}
+	}
+
+	private boolean excute(JSONObject json) {
+		String code = json.getString("code");
+		String faxingshijian = json.getString("faxingshijian");
+		StringBuilder newsb = FileNameUtil.getDirPath(faxingshijian);
+		boolean ok = false;
+		if(new File(newsb.toString()+code+"/"+code+".over").exists()){
+			ok = true;
+		}
+		StringBuilder sb = FileNameUtil.getOldDirPath(faxingshijian, code)
+				.append("ok");
+		File oldFile = new File(sb.toString());
+		if (oldFile.exists()) {
+			FileUtil.copyDir(oldFile.getParentFile(), newsb.toString(), false);
+			File oldOKfile = new File(newsb.append(code).append("/")
+					.append("ok").toString());
+			File newOKfile = new File(newsb.toString().replace("ok",
+					code + ".over"));
+			if(oldOKfile.renameTo(newOKfile)){
+				ok = true;
+				logger.info("{},local copy OK", newsb);
+			}
+		} else {
+			newsb.append(code).append("/");
+			String coverURL = (String) json.get("coverURL");
+			if (!StringUtil.isBlank(coverURL)) {
+				HttpImageUtil.downImage(coverURL, newsb.toString(), 3);
+			}
+			List<?> imgURLList = (ArrayList<?>) json.get("imgURLList");
+			List<?> bigImgURLList = (ArrayList<?>) json
+					.get("bigImgURLList");
+			downList(bigImgURLList, newsb, 1);
+			downList(imgURLList, newsb, bigImgURLList == null ? 2 : 3);
+			File newOKfile = new File(newsb.toString()+("/"+
+					code + ".over"));
+			try {
+				if(newOKfile.createNewFile()){
+					ok = true;
+					logger.info("{},处理OK", newsb);
+				}
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return ok;
 	}
 
 	private void downList(List<?> imgURLList, StringBuilder newsb, int type) {

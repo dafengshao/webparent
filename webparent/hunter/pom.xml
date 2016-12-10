@@ -33,6 +33,11 @@
 	    <artifactId>jsoup</artifactId>
 	    <version>1.9.2</version>
 	</dependency>
+	<!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+	<dependency>
+	    <groupId>redis.clients</groupId>
+	    <artifactId>jedis</artifactId>
+	</dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
