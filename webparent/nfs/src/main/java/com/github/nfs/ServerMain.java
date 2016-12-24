@@ -4,10 +4,10 @@ package com.github.nfs;
  * Hello world!
  *
  */
-public class App 
+public class ServerMain 
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+       
     }
 }

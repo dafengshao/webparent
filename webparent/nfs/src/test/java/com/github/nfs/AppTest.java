@@ -1,38 +1,32 @@
 package com.github.nfs;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.springframework.context.support.AbstractXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-/**
- * Unit test for simple App.
- */
+import com.github.nfs.db.MongodbAssistor;
+import com.github.nfs.model.MongoFile;
+
+
+
 public class AppTest 
-    extends TestCase
 {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
-
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
-    }
+	static AbstractXmlApplicationContext context = 
+			new ClassPathXmlApplicationContext(
+					"classpath:spring/applicationContext.xml"
+					
+					);
+	
+	public static void main(String[] args) {
+		MongodbAssistor mongodbAssistor = (MongodbAssistor)context.getBean("mongodbAssistor");
+		
+		MongoFile insertFile = new MongoFile();
+		//insertFile.set_id("123");
+		insertFile.setBody(new byte[20]);
+		insertFile.setUri("/1231/13.jpg");
+		mongodbAssistor.insert(insertFile);
+		
+		MongoFile findById = mongodbAssistor.findById("123");
+		System.out.println(findById);
+		context.close();
+	}
 }

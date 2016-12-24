@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<context:property-placeholder
+		ignore-unresolvable="true" ignore-resource-not-found="true"
+		system-properties-mode="NEVER"
+		location="classpath*:serverconfig.properties" />
+	<!-- Linux 版本的配置，务必不能删除-->
+	<context:property-placeholder
+		ignore-unresolvable="true" ignore-resource-not-found="true"
+		system-properties-mode="NEVER"
+		location="file:/etc/wonhighconf/member-integral-union/portal-server/application.properties" />
+ 	
+	<context:component-scan base-package="com.github.nfs">
+	</context:component-scan>
+	
+	<bean id="mongo" class="com.mongodb.MongoClient" >
+		<constructor-arg name="host" value="${mongo.host}"/>
+		<constructor-arg name="port" value="${mongo.port}"/>
+	</bean>
+	
+	<bean id="mongoFileDB" class="com.mongodb.DB">
+		<constructor-arg name="mongo" ref="mongo"/>
+		<constructor-arg name="name" value="${mongo.file.db.name}"/>
+	</bean>
+	
+	
+	<bean id="fileCollection" class="com.mongodb.DBCollection">
+		<constructor-arg name="database" ref="mongoFileDB"/>
+		<constructor-arg name="name" value="${mongo.file.db.filetable.name}"/>
+	</bean>
+	
+	
+</beans>
