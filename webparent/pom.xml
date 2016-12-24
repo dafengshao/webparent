@@ -28,6 +28,8 @@
 		<zkclient.version>0.1</zkclient.version>
 		<junit.version>4.11</junit.version>
 		<mockito.version>1.9.5</mockito.version>
+		<org.mongodb.version>3.4.0</org.mongodb.version>
+		<io.netty.version>5.0.0.Alpha1</io.netty.version>
 	</properties>
 
 	<prerequisites>
@@ -37,6 +39,13 @@
 
 	<dependencyManagement>
 		<dependencies>
+		<!-- netty -->
+			<dependency>
+			    <groupId>io.netty</groupId>
+			    <artifactId>netty-all</artifactId>
+			    <version>${io.netty.version}</version>
+			</dependency>
+		
 			<!-- spring -->
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -146,6 +155,14 @@
 				<artifactId>jedis</artifactId>
 				<version>${jedis.version}</version>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
+			<dependency>
+			    <groupId>org.mongodb</groupId>
+			    <artifactId>mongo-java-driver</artifactId>
+			    <version>${org.mongodb.version}</version>
+			</dependency>
+			
+			
 			<!-- NOSQL end -->
 
 			<!-- memcached -->
@@ -586,5 +603,6 @@
 		<module>hessianty-server</module>
 		<module>hunter</module>
 		<module>common</module>
+		<module>nfs</module>
 	</modules>
 </project>
