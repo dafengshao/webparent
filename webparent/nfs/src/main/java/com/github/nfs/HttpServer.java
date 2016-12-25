@@ -37,13 +37,15 @@ public class HttpServer {
 		this.port = port;
 	}
 	
+	EventLoopGroup bossGroup = new NioEventLoopGroup();
+	EventLoopGroup workerGroup = new NioEventLoopGroup();
+	ServerBootstrap strap = null;
 	//Executor exeutor = Executors.newCachedThreadPool(threadFactory)
 	
 	public void run() throws InterruptedException{
-		EventLoopGroup bossGroup = new NioEventLoopGroup();
-		EventLoopGroup workerGroup = new NioEventLoopGroup();
+
 		try{
-			ServerBootstrap strap = new ServerBootstrap();
+			strap = new ServerBootstrap();
 			strap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
 			.childHandler(new ChannelInitializer<SocketChannel>() {
 				@Override
@@ -67,9 +69,12 @@ public class HttpServer {
 			logger.info("http file server start ok .host:{},port:{}.",host,port);
 			future.channel().closeFuture().sync();
 		}finally{
-			bossGroup.shutdownGracefully();
-			workerGroup.shutdownGracefully();
+			shutdown();
 		}
+	}
+	private void shutdown() {
+		bossGroup.shutdownGracefully();
+		workerGroup.shutdownGracefully();
 	}
 	
 }

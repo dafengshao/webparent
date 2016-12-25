@@ -14,7 +14,6 @@ public class ServerMain
     	AbstractXmlApplicationContext context = 
     			new ClassPathXmlApplicationContext(
     					"classpath:spring/applicationContext.xml"
-    					
     					);
     }
 }
