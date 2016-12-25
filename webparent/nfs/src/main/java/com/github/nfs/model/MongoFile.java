@@ -2,8 +2,6 @@ package com.github.nfs.model;
 
 import java.io.Serializable;
 
-import org.apache.commons.codec.digest.Md5Crypt;
-
 import com.mongodb.BasicDBObject;
 
 public class MongoFile implements Serializable{
@@ -25,7 +23,7 @@ public class MongoFile implements Serializable{
 	public long getLength() {
 		return basicDBObject.getLong("length");
 	}
-	public MongoFile setLength(long length) {
+	private MongoFile setLength(long length) {
 		basicDBObject.put("length", length);
 		return this;
 	}
@@ -41,21 +39,21 @@ public class MongoFile implements Serializable{
 	}
 	public MongoFile setBody(byte[] body) {
 		basicDBObject.put("body", body);
+		setLength(body.length);
 		return this;
 	}
 	public String get_id() {
 		return basicDBObject.getString("_id");
 	}
-	/*public MongoFile set_id(String _id) {
+	public MongoFile set_id(String _id) {
 		basicDBObject.put("_id", _id);
 		return this;
-	}*/
+	}
 	public String getUri() {
 		return basicDBObject.getString("uri");
 	}
 	public MongoFile setUri(String uri) {
 		basicDBObject.put("uri", uri);
-		basicDBObject.put("_id", Md5Crypt.apr1Crypt(uri));
 		return this;
 	}
 	public String getDescribe() {

@@ -1,10 +1,5 @@
 package com.github.nfs;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.github.nfs.handler.FileServletHandler;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -16,6 +11,11 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.stream.ChunkedWriteHandler;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.nfs.handler.FileServletHandler;
 
 public class HttpServer {
 	
@@ -37,6 +37,7 @@ public class HttpServer {
 		this.port = port;
 	}
 	
+	//Executor exeutor = Executors.newCachedThreadPool(threadFactory)
 	
 	public void run() throws InterruptedException{
 		EventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -47,6 +48,11 @@ public class HttpServer {
 			.childHandler(new ChannelInitializer<SocketChannel>() {
 				@Override
 				protected void initChannel(SocketChannel ch) throws Exception {
+					
+					logger.info("当前线程id:{},name:{},ChannelInitializer:{}",
+							Thread.currentThread().getId(),
+							Thread.currentThread().getName()
+							);
 					ch.pipeline().addLast("http-decoder",new HttpRequestDecoder())
 					.addLast("http-aggregator",new HttpObjectAggregator(1024*512))//512KB
 					.addLast("http-encoder",new HttpResponseEncoder())

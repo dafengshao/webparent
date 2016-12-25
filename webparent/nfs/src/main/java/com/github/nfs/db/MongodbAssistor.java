@@ -1,5 +1,6 @@
 package com.github.nfs.db;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -26,8 +27,11 @@ public class MongodbAssistor {
 		 return null;
 	}
 	
-	public MongoFile find(String uri){
-		DBObject findOne = fileCollection.findOne(new BasicDBObject("uri",uri));
+	public MongoFile find(String name){
+		DBObject findOne = fileCollection.findOne(new BasicDBObject("name",name));
+		if(findOne==null){
+			return null;
+		}
 		MongoFile file = new MongoFile((BasicDBObject) findOne);
 		return file;
 	}
@@ -38,14 +42,22 @@ public class MongodbAssistor {
 		return file;
 	}
 	
-	public ResultMessage insert(MongoFile mongoFile){
+	public WriteResult insert(MongoFile mongoFile){
 		WriteResult insert = fileCollection.insert(mongoFile.getBasicDBObject());
 		
-		return ResultMessage.OK;
+		return insert;
 	}
 	
-	public ResultMessage insert(List<MongoFile> mongoFile){
-		return null;
+	public WriteResult insert(List<MongoFile> mongoFile){
+		if(mongoFile==null){
+			return null;
+		}
+		List<BasicDBObject> list = new ArrayList<>(mongoFile.size());
+		for(MongoFile file :mongoFile){
+			list.add(file.getBasicDBObject());
+		}
+		WriteResult insert = fileCollection.insert(list);
+		return insert;
 	}
 	
 }
