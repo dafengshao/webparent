@@ -1,19 +1,24 @@
 package com.hwf.common.io;
 
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.Kernel;
-import java.awt.image.ConvolveOp;
+
+import javax.swing.ImageIcon;
+
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGEncodeParam;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 public class ImageFileReinforce {
 
+	@SuppressWarnings("restriction")
 	public static void resize(File originalFile, File resizedFile,
 			int newWidth, float quality) throws IOException {
 
@@ -80,5 +85,17 @@ public class ImageFileReinforce {
 //		 File originalImage = new File("C:\\11.jpg");
 //		 resize(originalImage, new File("c:\\11-0.jpg"),150, 0.7f);
 //		 resize(originalImage, new File("c:\\11-1.jpg"),150, 1f);
+		String pth = "C:\\Users\\Administrator\\Desktop\\html\\img\\bangongshi";
+		File pathFile = new File(pth);
+		File[] listFiles = pathFile.listFiles();
+		
+		for(File img :listFiles){
+			String imgName = img.getName();
+			String newimgName = imgName.replace(".", "_700_1.");
+			File newFile = new File(pth+"\\"+newimgName);
+			resize(img,newFile,700,1f);
+			//break;
+		}
+		
 	}
 }
