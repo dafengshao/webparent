@@ -16,7 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import com.github.nfs.SpringBeansContext;
 import com.github.nfs.db.MongodbAssistor;
-import com.github.nfs.model.MongoFile;
+import com.github.nfs.model.MongodbFile;
+import com.mongodb.DB;
+import com.mongodb.DBObject;
 
 public class FileServletHandler extends
 		SimpleChannelInboundHandler<FullHttpRequest> {
@@ -48,9 +50,10 @@ public class FileServletHandler extends
 			String uri = request.getUri();
 			uri=uri.substring(uri.lastIndexOf("/")+1);
 			if(mongodbAssistor==null){
-				mongodbAssistor=SpringBeansContext.getBean("mongodbAssistor");
+				DB db = SpringBeansContext.getBean("mongoFileDB");
+				mongodbAssistor=new MongodbAssistor(db, "imginfo");
 			}
-			MongoFile file = mongodbAssistor.find(uri);
+			DBObject file = mongodbAssistor.find(uri);
 			if (file == null) {
 				// 404
 				return;
@@ -58,7 +61,7 @@ public class FileServletHandler extends
 			FullHttpResponse response = new DefaultFullHttpResponse(
 					HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
 			buildResponseInfo(response,file);
-			response.content().writeBytes(file.getBody());
+			response.content().writeBytes((byte[])file.get("body"));
 			response.content().writeBytes("\r\n".getBytes());
 
 			ctx.writeAndFlush(response)
@@ -81,11 +84,11 @@ Last-Modified:Thu, 01 Jan 1970 00:00:00 GMT
 Ohc-Response-Time:1 0 0 0 0 0
 Server:bfe/1.0.8.13-sslpool-patch
 Timing-Allow-Origin:http://www.baidu.com*/
-	private void buildResponseInfo(FullHttpResponse response,MongoFile file) {
+	private void buildResponseInfo(FullHttpResponse response,DBObject file) {
 		HttpHeaders headers = response.headers();
 		headers.set("Accept-Ranges", "bytes");
 		headers.set("Content-Type", "image/jpeg");
-		headers.set("Content-Length", file.getLength());
+		headers.set("Content-Length", file.get("length"));
 		
 		//headers.set("Last-Modified", file.getLength());
 	}

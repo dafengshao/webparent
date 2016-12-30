@@ -34,11 +34,14 @@
 		<constructor-arg name="database" ref="mongoFileDB"/>
 		<constructor-arg name="name" value="${mongo.file.db.imgtable}"/>
 	</bean>
+	<bean id="keyCollection" class="com.mongodb.DBCollection">
+		<constructor-arg name="database" ref="mongoFileDB"/>
+		<constructor-arg name="name" value="${mongo.file.db.keytable}"/>
+	</bean>
 	
 	<bean id="httpServer" class="com.github.nfs.HttpServer" init-method="run">
 		<property name="host" value="${http.host}"></property>
 		<property name="port" value="${http.port}"></property>
-	
 	</bean>
 	
 </beans>

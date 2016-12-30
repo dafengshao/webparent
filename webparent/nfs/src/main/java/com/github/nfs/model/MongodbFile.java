@@ -4,40 +4,40 @@ import java.io.Serializable;
 
 import com.mongodb.BasicDBObject;
 
-public class MongoFile implements Serializable{
+public class MongodbFile extends MongodbObject implements Serializable{
 
 	private static final long serialVersionUID = 177535211425532106L;
 	
-	private BasicDBObject basicDBObject;
-	public MongoFile(){
+	
+	public MongodbFile(){
 		basicDBObject = new BasicDBObject(7);
 	}
-	public MongoFile(BasicDBObject basicDBObject){this.basicDBObject=basicDBObject;}
+	public MongodbFile(BasicDBObject basicDBObject){this.basicDBObject=basicDBObject;}
 	public String getType() {
 		return basicDBObject.getString("type");
 	}
-	public MongoFile setType(String type) {
+	public MongodbFile setType(String type) {
 		basicDBObject.put("type", type);
 		return this;
 	}
 	public long getLength() {
 		return basicDBObject.getLong("length");
 	}
-	private MongoFile setLength(long length) {
+	private MongodbFile setLength(long length) {
 		basicDBObject.put("length", length);
 		return this;
 	}
 	public String getName() {
 		return basicDBObject.getString("name");
 	}
-	public MongoFile setName(String name) {
+	public MongodbFile setName(String name) {
 		basicDBObject.put("name", name);
 		return this;
 	}
 	public byte[] getBody() {
 		return (byte[]) basicDBObject.get("body");
 	}
-	public MongoFile setBody(byte[] body) {
+	public MongodbFile setBody(byte[] body) {
 		basicDBObject.put("body", body);
 		setLength(body.length);
 		return this;
@@ -45,29 +45,23 @@ public class MongoFile implements Serializable{
 	public String get_id() {
 		return basicDBObject.getString("_id");
 	}
-	public MongoFile set_id(String _id) {
+	public MongodbFile set_id(String _id) {
 		basicDBObject.put("_id", _id);
 		return this;
 	}
 	public String getUri() {
 		return basicDBObject.getString("uri");
 	}
-	public MongoFile setUri(String uri) {
+	public MongodbFile setUri(String uri) {
 		basicDBObject.put("uri", uri);
 		return this;
 	}
 	public String getDescribe() {
 		return basicDBObject.getString("describe");
 	}
-	public MongoFile setDescribe(String describe) {
+	public MongodbFile setDescribe(String describe) {
 		basicDBObject.put("describe", describe);
 		return this;
-	}
-	public BasicDBObject getBasicDBObject() {
-		return basicDBObject;
-	}
-	public void setBasicDBObject(BasicDBObject basicDBObject) {
-		this.basicDBObject = basicDBObject;
 	}
 	
 	private String objString;

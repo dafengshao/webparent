@@ -3,61 +3,92 @@ package com.github.nfs.db;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Component;
-
-import com.github.nfs.model.MongoFile;
-import com.github.nfs.model.ResultMessage;
+import com.github.nfs.model.MongodbFile;
+import com.github.nfs.model.MongodbObject;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.WriteResult;
 
-@Component
 public class MongodbAssistor {
-	@Resource
-	private DBCollection fileCollection ;
 	
-	public List<MongoFile> find(MongoFile mongoFile){
+	private DB db;
+	
+	public MongodbAssistor(){
+		
+	}
+	
+	public MongodbAssistor(DB db,String collectionName){
+		this.db = db;
+		this.fileCollection = db.getCollection(collectionName);
+	}
+	
+	private DBCollection fileCollection ;
+	public <T> List<T> find(MongodbObject mongoFile,MongodbObjectBuilder mongodbObjectBuilder){
 		BasicDBObject basicDBObject = mongoFile.getBasicDBObject();
 		DBCursor find = fileCollection.find(basicDBObject);
+		
 		//find.
 		 return null;
 	}
 	
-	public MongoFile find(String name){
+	public DBObject find(String name){
 		DBObject findOne = fileCollection.findOne(new BasicDBObject("name",name));
 		if(findOne==null){
 			return null;
 		}
-		MongoFile file = new MongoFile((BasicDBObject) findOne);
-		return file;
+		return findOne;
+	}
+
+	private <T> T build(MongodbObjectBuilder mongodbObjectBuilder,DBObject findOne) {
+		if(mongodbObjectBuilder==null){
+			return (T) findOne;
+		}
+		T builder = mongodbObjectBuilder.builder((BasicDBObject) findOne);
+		return builder;
 	}
 	
-	public MongoFile findById(String _id){
+	public DBObject findById(String _id){
 		DBObject findOne = fileCollection.findOne(_id);
-		MongoFile file = new MongoFile((BasicDBObject) findOne);
-		return file;
+		return findOne;
 	}
 	
-	public WriteResult insert(MongoFile mongoFile){
+	public WriteResult insert(MongodbFile mongoFile){
 		WriteResult insert = fileCollection.insert(mongoFile.getBasicDBObject());
 		
 		return insert;
 	}
 	
-	public WriteResult insert(List<MongoFile> mongoFile){
+	public WriteResult insert(List<MongodbFile> mongoFile){
 		if(mongoFile==null){
 			return null;
 		}
 		List<BasicDBObject> list = new ArrayList<>(mongoFile.size());
-		for(MongoFile file :mongoFile){
+		for(MongodbFile file :mongoFile){
 			list.add(file.getBasicDBObject());
 		}
 		WriteResult insert = fileCollection.insert(list);
 		return insert;
 	}
+
+	public DB getDb() {
+		return db;
+	}
+
+	public void setDb(DB db) {
+		this.db = db;
+	}
+
+	public DBCollection getFileCollection() {
+		return fileCollection;
+	}
+
+	public void setFileCollection(DBCollection fileCollection) {
+		this.fileCollection = fileCollection;
+	}
+
+	
 	
 }

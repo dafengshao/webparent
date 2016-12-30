@@ -35,5 +35,8 @@
 		<constructor-arg name="name" value="${mongo.file.db.imgtable}"/>
 	</bean>
 	
-	
+	<bean id="keyCollection" class="com.mongodb.DBCollection">
+		<constructor-arg name="database" ref="mongoFileDB"/>
+		<constructor-arg name="name" value="${mongo.file.db.keytable}"/>
+	</bean>
 </beans>
