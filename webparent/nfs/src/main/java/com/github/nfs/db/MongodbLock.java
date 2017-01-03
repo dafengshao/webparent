@@ -9,8 +9,9 @@ import com.mongodb.DBCollection;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.WriteResult;
 /**
- * 可以根据不同的业务配置不同的db和table,分担mongodb服务器压力
- * 同一个业务必须为相同的db和table
+ * mongodb的分布式锁<br>
+ * 可以根据不同的业务配置不同的db和table,分担mongodb服务器压力<br>
+ * 同一个业务必须为相同的db和table<br>
  * */
 public class MongodbLock {
 	
@@ -22,6 +23,11 @@ public class MongodbLock {
 		this.db = db;
 		this.lockTable = lockTable;
 		fileCollection = db.getCollection(lockTable);
+		//BasicDBObject basic = new BasicDBObject();
+		//{"createDate":1},{expireAfterSeconds:600}
+		//basic.put("time", 1);
+		//basic.put("expireAfterSeconds", 1800);
+		//fileCollection.createIndex(basic);
 	}
 	
 	
@@ -30,16 +36,20 @@ public class MongodbLock {
 		String id = encryptId(keyStr);
 		LockOwner key = new LockOwner(2);
 		key.setKey(id);
-		key.setCreateDate(new Date());
+		key.setTime(new Date());
 		//key.setValue(UUID.randomUUID().toString());
 		try{
 			WriteResult insert = fileCollection.insert(key.getBasicDBObject());
-			System.out.println("tryLock:"+insert);
+			//System.out.println("tryLock:"+insert);
 			//if()
 		}catch(DuplicateKeyException e){
-			System.out.println("lock by other");
+			//System.out.println("lock by other");
 			key = null;
 			return null;
+		}catch(Exception e){
+			//System.out.println("lock by other");
+			key = null;
+			throw new RuntimeException(e);
 		}
 		return key;
 	}
@@ -52,7 +62,7 @@ public class MongodbLock {
 				break;
 			}
 			try {
-				Thread.sleep(43);
+				Thread.sleep(101);
 			} catch (InterruptedException e) {
 				
 			}
@@ -86,7 +96,7 @@ public class MongodbLock {
 	
 	protected String encryptId(String keyStr) {
 		int fir = keyStr.hashCode()%1000;
-		return fir+keyStr;
+		return fir+"_"+keyStr;
 	}
 	
 	public DBCollection getFileCollection() {
@@ -149,12 +159,12 @@ public class MongodbLock {
 			return this;
 		}
 
-		public Date getCreateDate() {
-			return basicDBObject.getDate("createDate");
+		public Date getTime() {
+			return basicDBObject.getDate("ctime");
 		}
 
-		private LockOwner setCreateDate(Date createDate) {
-			basicDBObject.put("createDate", createDate);
+		private LockOwner setTime(Date createDate) {
+			basicDBObject.put("ctime", createDate);
 			return this;
 		}
 		

@@ -19,14 +19,42 @@
 	<context:component-scan base-package="com.github.nfs">
 	</context:component-scan>
 	
+<!-- 	<bean  id="mongodbReplsetServers"> -->
+<!-- 		<list> -->
+<!-- 			<bean id="rs1" class="com.mongodb.ServerAddress"> -->
+<!-- 				<constructor-arg name="host" value="192.168.2.78"/> -->
+<!-- 				<constructor-arg name="port" value="37017"/> -->
+<!-- 			</bean>	 -->
+<!-- 			<bean id="rs2" class="com.mongodb.ServerAddress"> -->
+<!-- 				<constructor-arg name="host" value="192.168.2.78"/> -->
+<!-- 				<constructor-arg name="port" value="47017"/> -->
+<!-- 			</bean>	 -->
+<!-- 		</list> -->
+<!-- 	</bean> -->
+	
 	<bean id="mongo" class="com.mongodb.MongoClient" >
-		<constructor-arg name="host" value="${mongo.host}"/>
-		<constructor-arg name="port" value="${mongo.port}"/>
+		<constructor-arg type="java.util.List">
+			<array>
+			<bean id="rs1" class="com.mongodb.ServerAddress">
+				<constructor-arg name="host" value="192.168.2.78"/>
+				<constructor-arg name="port" value="37017"/>
+			</bean>	
+			<bean id="rs2" class="com.mongodb.ServerAddress">
+				<constructor-arg name="host" value="192.168.2.78"/>
+				<constructor-arg name="port" value="47017"/>
+			</bean>	
+			<bean id="rs2" class="com.mongodb.ServerAddress">
+				<constructor-arg name="host" value="192.168.2.78"/>
+				<constructor-arg name="port" value="57017"/>
+			</bean>	
+		</array>
+			
+		</constructor-arg>
 	</bean>
 	
 	<bean id="mongoFileDB" class="com.mongodb.DB">
 		<constructor-arg name="mongo" ref="mongo"/>
-		<constructor-arg name="name" value="${mongo.file.db.name}"/>
+		<constructor-arg name="name" value="lockdb"/>
 	</bean>
 	
 	
@@ -39,9 +67,9 @@
 		<constructor-arg name="name" value="${mongo.file.db.keytable}"/>
 	</bean>
 	
-	<bean id="httpServer" class="com.github.nfs.HttpServer" init-method="run">
-		<property name="host" value="${http.host}"></property>
-		<property name="port" value="${http.port}"></property>
-	</bean>
+<!-- 	<bean id="httpServer" class="com.github.nfs.HttpServer" init-method="run"> -->
+<!-- 		<property name="host" value="${http.host}"></property> -->
+<!-- 		<property name="port" value="${http.port}"></property> -->
+<!-- 	</bean> -->
 	
 </beans>
