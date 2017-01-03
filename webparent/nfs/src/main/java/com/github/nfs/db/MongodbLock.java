@@ -56,9 +56,22 @@ public class MongodbLock {
 	public LockOwner tryLock(String keyStr,long timeout){
 		long endTime = System.currentTimeMillis()+timeout;
 		LockOwner key = null;
-		while((key=tryLock(keyStr))==null){
+		Exception ex = null;
+		while(true){
+			try{
+				key=tryLock(keyStr);
+				ex=null;
+			}catch(Exception e){
+				ex = e;
+			}
+			if(key!=null){
+				return key;
+			}
 			long currentTime = System.currentTimeMillis();
 			if(currentTime>endTime&&timeout>0){
+				if(ex!=null){
+					throw new RuntimeException(ex);
+				}
 				break;
 			}
 			try {
