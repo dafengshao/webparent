@@ -91,13 +91,13 @@ public class MongodbLock {
 		while(i++<5){
 			try{
 				WriteResult remove = fileCollection.remove(key.getBasicDBObject());
-				System.out.println("unlock:"+remove);
+				//System.out.println("unlock:"+remove);
 				//throw new RuntimeException();
 				return true;
 			}catch(Exception e){
 				try {
-					System.out.println(i);
-					Thread.sleep(i*43L);
+					//System.out.println(i);
+					Thread.sleep(i*63L);
 				} catch (InterruptedException e1) {
 					
 				}

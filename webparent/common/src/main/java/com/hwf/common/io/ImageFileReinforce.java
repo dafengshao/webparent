@@ -85,17 +85,7 @@ public class ImageFileReinforce {
 //		 File originalImage = new File("C:\\11.jpg");
 //		 resize(originalImage, new File("c:\\11-0.jpg"),150, 0.7f);
 //		 resize(originalImage, new File("c:\\11-1.jpg"),150, 1f);
-		String pth = "C:\\Users\\Administrator\\Desktop\\html\\img\\bangongshi";
-		File pathFile = new File(pth);
-		File[] listFiles = pathFile.listFiles();
-		
-		for(File img :listFiles){
-			String imgName = img.getName();
-			String newimgName = imgName.replace(".", "_700_1.");
-			File newFile = new File(pth+"\\"+newimgName);
-			resize(img,newFile,700,1f);
-			//break;
-		}
-		
+		File originalImage = new File("C:\\Users\\Administrator\\Desktop\\html\\img\\jd1.jpg");
+		 resize(originalImage, new File("C:\\Users\\Administrator\\Desktop\\html\\img\\jd1_1.jpg"),500, 1f);
 	}
 }

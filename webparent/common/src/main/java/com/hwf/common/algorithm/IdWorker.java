@@ -89,7 +89,7 @@ public class IdWorker {
 		IdWorker idWorker = new IdWorker(1, 0);
 		for (int i = 0; i < 1000; i++) {
 			long id = idWorker.nextId();
-			Thread.sleep(10);
+			//Thread.sleep(10);
 			System.out.println(id);
 		}
 	}
