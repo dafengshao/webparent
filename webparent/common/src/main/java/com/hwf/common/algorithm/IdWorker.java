@@ -87,10 +87,13 @@ public class IdWorker {
 
 	public static void main(String[] args) throws InterruptedException {
 		IdWorker idWorker = new IdWorker(1, 0);
+		IdWorker idWorker2 = new IdWorker(1, 1);
 		for (int i = 0; i < 1000; i++) {
 			long id = idWorker.nextId();
+			long id2 = idWorker2.nextId();
 			//Thread.sleep(10);
-			System.out.println(id);
+			System.out.println("1:"+id);
+			System.out.println("2:"+id2);
 		}
 	}
 }
