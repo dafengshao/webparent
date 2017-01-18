@@ -54,6 +54,9 @@ public class MongodbLock {
 		return key;
 	}
 	public LockOwner tryLock(String keyStr,long timeout){
+		if(timeout<=0){
+			throw new RuntimeException("timeout 必须大于0");
+		}
 		long endTime = System.currentTimeMillis()+timeout;
 		LockOwner key = null;
 		Exception ex = null;
@@ -68,7 +71,7 @@ public class MongodbLock {
 				return key;
 			}
 			long currentTime = System.currentTimeMillis();
-			if(currentTime>endTime&&timeout>0){
+			if(currentTime>endTime){
 				if(ex!=null){
 					throw new RuntimeException(ex);
 				}
