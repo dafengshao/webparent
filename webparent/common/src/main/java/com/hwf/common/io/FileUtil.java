@@ -10,7 +10,7 @@ import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+/**目录拷贝（小文件）*/
 public final class FileUtil {
 	
 	private static final Logger logger = LoggerFactory.getLogger(FileUtil.class);
@@ -56,8 +56,7 @@ public final class FileUtil {
 	}
 	
 	
-	public static boolean copy(File inFile,File outFile){
-		
+	public static boolean copy(File inFile,File outFile){		
 		FileInputStream fis = null;
 		FileOutputStream fos = null;
 		BufferedInputStream bis = null;
@@ -109,7 +108,7 @@ public final class FileUtil {
 			Files.delete(file.toPath());
 			return true;
 		} catch (IOException e) {
-			logger.warn("delete ioexception",e);
+			logger.error("delete ioexception",e);
 		}
 		return false;
 	}

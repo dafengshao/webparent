@@ -15,7 +15,7 @@ import javax.swing.ImageIcon;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGEncodeParam;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
-
+/**图片压缩工具*/
 public class ImageFileReinforce {
 
 	@SuppressWarnings("restriction")
@@ -86,6 +86,6 @@ public class ImageFileReinforce {
 //		 resize(originalImage, new File("c:\\11-0.jpg"),150, 0.7f);
 //		 resize(originalImage, new File("c:\\11-1.jpg"),150, 1f);
 		File originalImage = new File("C:\\Users\\Administrator\\Desktop\\html\\img\\jd1.jpg");
-		 resize(originalImage, new File("C:\\Users\\Administrator\\Desktop\\html\\img\\jd1_1.jpg"),500, 1f);
+		 resize(originalImage, new File("C:\\Users\\Administrator\\Desktop\\html\\img\\jd1_1.jpg"),2000, 1f);
 	}
 }

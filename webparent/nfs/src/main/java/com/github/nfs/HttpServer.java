@@ -61,7 +61,6 @@ public class HttpServer {
 					.addLast("http-chunked", new ChunkedWriteHandler())
 					//.addLast("http-logger", new LoggingHandler())
 					.addLast("http-file-servlet",new FileServletHandler())
-					//.addLast("http-servlet2",new HessianServiceHandler2())
 					;
 				}
 			});
